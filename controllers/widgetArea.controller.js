@@ -66,6 +66,61 @@ result.getAll = async (req, res)=>{
 
     return res.status(baseResponse.responseCode).json(baseResponse);
 } 
+result.getDetial = async (req,res)=>{
+    let mysql = null;
+    let params = req.params;
+    
+    try{
+   
+     
+        const rsDetail = await WidgetAreaModel.getDetailFromDB(params);
+        
+        if(rsDetail.data){
+        let params = {
+                area_id:rsDetail.data.id,
+                order_by:'ordering_count ASC'
+            }
+           
+              rsDetail.data.widgets = []
+          const widgets =  await WidgetsModel.getAllFromDB(params);
+          if(widgets.data){
+            rsDetail.data.widgets = widgets.data;
+
+            }
+                    
+           
+
+       }
+        
+       
+       
+        baseResponse.message = 'Query Done';
+        baseResponse.success = true;
+        baseResponse.responseCode = 200;
+   
+        baseResponse.data = rsDetail.data;
+       
+
+    }catch(error){
+       
+        baseResponse.total = 0;
+        baseResponse.message = error.message;
+        baseResponse.success = error.success;
+        baseResponse.responseCode = error.responseCode;
+        baseResponse.data = undefined;
+        
+    }finally{
+        if(mysql){
+            await mysql.release();
+
+        }
+
+    }
+
+
+    return res.status(baseResponse.responseCode).json(baseResponse);
+
+}
 result.updateArea = async (req, res)=>{
     let mysql = null;
     let params = {};

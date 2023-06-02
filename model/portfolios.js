@@ -192,7 +192,7 @@ result.deletePortfolioCategoryfromDB = async function(portfolio_id){
 result.getPortfoliosDetailFromDB = async function(slug){
   let host = process.env.URLPATH;
   if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-    host = 'http://localhost:3001/';
+    host = 'http://localhost:3005/';
   }
     let mysql = null;
     let select = 'portfolios.*,portfolios.title,c.title category_name, CONCAT("'+host+'",cover_image) cover_fullpath, CONCAT("'+host+'",banner_image) banner_fullpath, CONCAT("'+host+'",logo_image) logo_fullpath';

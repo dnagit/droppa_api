@@ -7,7 +7,7 @@ result.getAllFromDB = async function(params){
     let mysql = null;
     let host = process.env.URLPATH;
     if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-      host = 'http://localhost:3001/';
+      host = 'http://localhost:3005/';
     }
 
     try {
@@ -66,7 +66,7 @@ result.getAllFromDB = async function(params){
         mysql = await mysqlConnector.connection();
         let host = process.env.URLPATH;
         if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-          host = 'http://localhost:3001/';
+          host = 'http://localhost:3005/';
         }
 
         let select = '*, CONCAT("'+host+'",image) image'
@@ -108,7 +108,7 @@ result.getAllFromDB = async function(params){
     let mysql = null;
     let host = process.env.URLPATH;
     if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-      host = 'http://localhost:3001/';
+      host = 'http://localhost:3005/';
     }
     try{
       mysql = await  mysqlConnector.connection();

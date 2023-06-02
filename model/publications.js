@@ -107,7 +107,7 @@ result.getAllFromDB = async function(params){
 result.getpublicationsDetailFromDB = async function(slug){
   let host = process.env.URLPATH;
   if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-    host = 'http://localhost:3001/';
+    host = 'http://localhost:3005/';
   }
     let mysql = null;
     let select = 'publications.*,publications.title, CONCAT("'+host+'",cover_image) cover_fullpath, CONCAT("'+host+'",banner_image) banner_fullpath, CONCAT("'+host+'",logo_image) logo_fullpath';

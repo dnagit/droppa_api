@@ -281,7 +281,7 @@ result.addBannerImageFromDB = async function(params,id){
     let mysql = null;
     let host = process.env.URLPATH;
     if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-      host = 'http://localhost:3001/';
+      host = 'http://localhost:3005/';
     }
     try{
       mysql = await  mysqlConnector.connection();
@@ -325,7 +325,7 @@ result.getimageAllFromDB = async function(params){
     let base = {};
     let host = process.env.URLPATH;
     if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-        host = 'http://localhost:3001/';
+        host = 'http://localhost:3005/';
     }
     
     try {

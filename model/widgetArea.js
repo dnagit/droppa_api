@@ -50,6 +50,46 @@ result.getAllFromDB = async function(params){
     }
     return base;
 }
+result.getDetailFromDB = async function(params){
+  let mysql = null;
+  let base = {};
+  
+  try {
+      mysql = await mysqlConnector.connection();
+      const from = '`widgets_area`';
+   
+     
+      
+  let data = await mysql.rawquery(`SELECT * FROM `+from+` WHERE slug=?;`,[params.slug]);
+
+  
+    
+      if (Array.isArray(data) && data.length > 0) {
+        
+          base.data = data[0];
+          base.success = true;
+      }else{
+         
+          base.data = {};
+          base.success = false;
+          
+
+      }
+  }catch(error){
+      
+      error.message = `service widgetArea.getDetailFromDB error : ${error}`;
+      error.success = false;
+      error.responseCode = 400;
+      error.data = [];
+      throw(error);
+  }finally{
+      if(mysql){
+          await mysql.release();
+
+      }
+  }
+  return base;
+}
 result.updateArea = async function(id,params){
     let mysql = null;
     let base = {};

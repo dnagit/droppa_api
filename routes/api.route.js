@@ -152,6 +152,7 @@ router.delete("/banner/v1/image/delete/:id", await bannerController.deleteBanner
 
 //widgets
 router.post("/widgets/v1/area/getall", await widgetAreaController.getAll);
+router.get("/widgets/v1/area/get/:slug", await widgetAreaController.getDetial);
 router.post("/widgets/v1/area/add", await widgetAreaController.addArea);
 router.put("/widgets/v1/area/update/:id", await widgetAreaController.updateArea);
 router.delete('/widgets/v1/area/delete/:id', await widgetAreaController.deleteArea);

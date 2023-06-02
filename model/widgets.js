@@ -106,12 +106,13 @@ result.getNavigationsDetailFromDB = async function(id){
      
       const data = await mysql.rawquery(`SELECT ${select} FROM `+from+`  WHERE area_id = ? `,[params.area_id]);
      
-      const res = await mysql.rawquery(`INSERT INTO `+table+` (area_id,title,uri,short_description,created_by,created_at,ordering_count) 
-      VALUES (?,?,?,?,?,?,?)`,
+      const res = await mysql.rawquery(`INSERT INTO `+table+` (area_id,title,uri,component,short_description,created_by,created_at,ordering_count) 
+      VALUES (?,?,?,?,?,?,?,?)`,
       [
         params.area_id,
         params.title,
         params.uri,
+        params.component,
         params.short_description,
      
         params.created_by,
@@ -173,10 +174,11 @@ result.updateWidgetseFromDb = async function(params,id){
     console.log('params',params);
     try{
         mysql = await  mysqlConnector.connection();
-        const res = await mysql.rawquery(`UPDATE `+table+` SET title= ?,uri= ?,short_description= ?
+        const res = await mysql.rawquery(`UPDATE `+table+` SET title= ?,uri= ?, component=?,short_description= ?
         WHERE id= ?;`,[
             params.title,
             params.uri,
+            params.component,
             params.short_description,
             id
             ]);

@@ -8,7 +8,7 @@ result.getAllFromDB = async function(params){
     let base = {};
     let host = process.env.URLPATH;
     if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
-      host = 'http://localhost:3001/';
+      host = 'http://localhost:3005/';
     }
     
     try {
