@@ -292,6 +292,7 @@ result.updateBanneImageOrdering = async function(req,res){
 
         }
     }
+    return res.status(baseResponse.responseCode).json(baseResponse);
 
 }
 result.deleteBannerImage = async(req,res) =>{

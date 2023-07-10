@@ -25,7 +25,53 @@ import masterController from '../controllers/master.controller'
 
 import publicationsController from '../controllers/publications.controller'
 import publicationsImageController from '../controllers/publicationsImage.controller'
+
+
+import componentGroupController from '../controllers/componentGroup.controller'
+import folderController from '../controllers/folder.controller'
+import filesController from '../controllers/files.controller'
+
+
+import componentsController from '../controllers/components.controller'
+import componentsGroupsController from '../controllers/componentsGroups.controller'
 const router = baseRoute.Router();
+
+
+
+//file folder
+router.post("/files/v1/getall", await filesController.getAll);
+router.post("/files/v1/upload", await filesController.uploads);
+router.post("/files/v1/updateOrdering", await filesController.updateOrder);
+router.put("/files/v1/update/:id", await filesController.updateDetail);
+
+router.delete("/files/v1/delete/:id", await filesController.deleteData);
+
+
+router.post("/files/v1/folder/getall", await folderController.getAll);
+router.post("/files/v1/folder/add", await folderController.addData);
+router.post("/files/v1/folder/updateOrdering", await folderController.updateOrder);
+router.put("/files/v1/folder/update/:id", await folderController.updateDetail);
+router.delete("/files/v1/folder/delete/:id", await folderController.deleteData);
+
+
+//component groups
+router.post("/component/v1/group/getall", await componentGroupController.getAll);
+
+
+//components
+router.post("/components/v1/getall", await componentsController.getAll);
+router.get("/components/v1/detail/:id", await componentsController.getComponentsDetail);
+router.post("/components/v1/add", await componentsController.addComponents);
+router.delete("/components/v1/delete/:id", await componentsController.deleteComponents);
+router.put("/components/v1/update/:id", await componentsController.updateComponents);
+
+//components_groups
+router.post("/components/v1/groups/getall", await componentsGroupsController.getAll);
+router.get("/components/v1/groups/detail/:id", await componentsGroupsController.getComponentsGroupsDetail);
+router.post("/components/v1/groups/add", await componentsGroupsController.addComponentsGroups);
+router.delete("/components/v1/groups/delete/:id", await componentsGroupsController.deleteComponentsGroups);
+router.put("/components/v1/groups/update/:id", await componentsGroupsController.updateComponentsGroups);
+
 //Users
 router.post("/users/v1/getall", await usersController.getAll);
 router.post("/users/v1/login", await usersController.loginUser);

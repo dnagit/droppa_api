@@ -9,12 +9,30 @@ result.getAll = async (req, res)=>{
    
      
         const rsDetail = await pagesModel.getAllFromDB(params);
+        const rsAdd = await Promise.all(
+            rsDetail.data.map(async (item) => {
+               // console.log('rsAdd',item);
+                item.contents = [];
+                let content = await pagesModel.getAllContentFromDB(item.id);
+               // console.log('content',content);
+                if(content.success){
+                    item.contents = content.data;
+                }
+               
+               
+                return item;
+               // image.ordering_count = index;
+                //await bannerModel.updateBanneImageOrderingFromDB(image,image.id);
+              
+            })
+        );
+       
        
         baseResponse.message = 'Query Done';
         baseResponse.success = true;
         baseResponse.responseCode = 200;
         baseResponse.total = rsDetail.total;
-        baseResponse.data = rsDetail.data;
+        baseResponse.data = rsAdd;
        
 
     }catch(error){
@@ -46,7 +64,16 @@ result.updatepages = async (req, res)=>{
         
         // cover_image = JSON.parse(JSON.stringify(req.files)).blogFile;
     }
+    if(params.contents){
+        params.contents = JSON.parse(params.contents);
+    }
+    if(params.contents_remove){
+        params.contents_remove = JSON.parse(params.contents_remove);
+    }
    
+    
+   // params.contents_remove = JSON.parse(params.contents_remove);
+    
     if(cover_image){
         
         params.banner_image  = await pagesModel.uploadImages(cover_image.pagesFile,params,req.ref);
@@ -57,6 +84,48 @@ result.updatepages = async (req, res)=>{
    
      
         const rsDetail = await pagesModel.updatePages(id,params);
+        if(rsDetail.success){
+            if(params.contents.length > 0){
+                await Promise.all(
+                    params.contents.map(async (value,index) => {
+                        value.index = index;
+                        if(cover_image){
+                            if(cover_image['content_contentFile_'+index]){
+                                
+                                value.image  = await pagesModel.uploadImages(cover_image['content_contentFile_'+index],params,req.ref);
+                                    // if(cover_image.blogFile){
+                            }
+                        }
+                       
+                        //cover_image = {...value.files}
+                        if(value.id > 0){
+                            console.log('contents-'+index,value);
+                           await pagesModel.updateContent(value,value.id);
+                        }else{
+                            await pagesModel.addContent(id,value);
+                        }   
+                   
+                         return value;
+                    
+                    })
+              );
+            }
+            if(params.contents_remove.length > 0){
+                await Promise.all(
+                    params.contents_remove.map(async (value) => {
+                       
+                        await pagesModel.deleteContent(value);
+                       
+                      
+                   
+                         return value;
+                    
+                    })
+              );
+            }
+             
+
+        }
        
         baseResponse.message = rsDetail.message;
         baseResponse.success = rsDetail.success;
@@ -93,6 +162,16 @@ result.getpagesDetail = async (req,res) =>{
     let mysql = null;
     try{
         const rsDetail = await pagesModel.getPagesDetailFromDB(slug);
+        rsDetail.data.contents = [];
+        let content = await pagesModel.getAllContentFromDB(rsDetail.data.id);
+        if(content.success){
+            rsDetail.data.contents = content.data;
+        }
+        content.data.map(v=>{
+            console.log('v',v.data);
+        })
+       
+        
         baseResponse.data = rsDetail.data;
         baseResponse.success = rsDetail.success;
         baseResponse.message = rsDetail.message;
@@ -126,9 +205,37 @@ result.addpages = async (req,res) =>{
         params.banner_image  = await pagesModel.uploadImages(cover_image.pagesFile,params,req.ref);
        
     }
+    if(params.contents){
+        params.contents = JSON.parse(params.contents);
+    }
    
         try{
             const rsAdd = await pagesModel.addPagesFromDB(params);
+            if(params.contents.length > 0){
+                await Promise.all(
+                    params.contents.map(async (value,index) => {
+                        value.index = index;
+                        if(cover_image){
+                            if(cover_image['content_contentFile_'+index]){
+                                
+                                value.image  = await pagesModel.uploadImages(cover_image['content_contentFile_'+index],params,req.ref);
+                                    // if(cover_image.blogFile){
+                            }
+                        }
+                       
+                        //cover_image = {...value.files}
+                        if(value.id > 0){
+                            
+                           await pagesModel.updateContent(value,value.id);
+                        }else{
+                            await pagesModel.addContent(rsAdd.data.insertId,value);
+                        }   
+                   
+                         return value;
+                    
+                    })
+              );
+            }
             baseResponse.data = rsAdd.data;
             baseResponse.success = rsAdd.success;
             baseResponse.message = rsAdd.message;
