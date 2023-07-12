@@ -69,7 +69,7 @@ result.updateservices = async (req, res)=>{
     const rsCheck = await servicesModel.checkServicesUniqueFromDB(params,id);
     if(rsCheck.success == true){
 
-        if(cover_image.servicesFile){
+        if(cover_image){
             params.icon  = await servicesModel.uploadImages(cover_image.servicesFile,params,req.ref);
            
         }
@@ -190,8 +190,11 @@ result.addservices = async (req,res) =>{
 
     const rsDetail = await servicesModel.checkServicesFromDB(params);
     if(rsDetail.success == true){
-        if(cover_image.servicesFile){
-            params.icon  = await servicesModel.uploadImages(cover_image.servicesFile,params,req.ref);
+        if(cover_image){
+            if(cover_image.servicesFile){
+                params.icon  = await servicesModel.uploadImages(cover_image.servicesFile,params,req.ref);
+            }
+           
            
         }
         try{
