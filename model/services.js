@@ -337,7 +337,7 @@ result.addContent = async function(params){
     const res = await mysql.rawquery(`INSERT INTO `+table+` (services_id,layout_id,title,description,image) 
     VALUES (?,?,?,?,?)`,
     [
-      params.blog_id,
+      params.services_id,
       params.layout_id,
       params.title,
       params.description,

@@ -83,7 +83,7 @@ result.updateservices = async (req, res)=>{
                 let content = {};
                 
                 content.id = params['content_id_'+i];
-                content.blog_id = id;
+                content.services_id = id;
                 content.layout_id = params['content_layout_id_'+i];
                 content.title = params['content_title_'+i];
                 content.description = params['content_description_'+i];
@@ -196,13 +196,14 @@ result.addservices = async (req,res) =>{
         }
         try{
             const rsAdd = await servicesModel.addServicesFromDB(params);
+            const services_id = rsAdd.data.insertId;
             if(rsAdd.success){
                 let d = [];
                 for(var i = 0; i <params.count_conent;i++){
                     let content = {};
                     
                     content.id = params['content_id_'+i];
-                    content.blog_id = blog_id;
+                    content.services_id = services_id;
                     content.layout_id = params['content_layout_id_'+i];
                     content.title = params['content_title_'+i];
                     content.description = params['content_description_'+i];
