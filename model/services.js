@@ -329,4 +329,151 @@ result.uploadImages = async function(cover_image,params,ref){
         }
         return '';
 }
+result.addContent = async function(params){
+  let table = '`services_content`';
+  let mysql = null;
+  try{
+    mysql = await  mysqlConnector.connection();
+    const res = await mysql.rawquery(`INSERT INTO `+table+` (services_id,layout_id,title,description,image) 
+    VALUES (?,?,?,?,?)`,
+    [
+      params.blog_id,
+      params.layout_id,
+      params.title,
+      params.description,
+      params.image
+     
+      ]);
+    
+      baseResponse.data = res;
+      baseResponse.success = true;
+      baseResponse.message = 'added';
+      baseResponse.responseCode = 200;
+
+  }catch(error){
+   
+    baseResponse.data = undefined;
+    baseResponse.success = false;
+    baseResponse.message = `service Blogs.addBlogsFromDB error : ${error}`;
+    baseResponse.responseCode = 200;
+    
+
+  }finally{
+    if(mysql){
+        await mysql.release();
+
+    }
+  }
+  return baseResponse;
+
+}
+result.updateContent = async function(params,id){
+  let table = '`services_content` b';
+  let mysql = null
+
+  try{
+      mysql = await  mysqlConnector.connection();
+      const res = await mysql.rawquery(`UPDATE `+table+` SET b.layout_id=?,b.title=?,b.description=?,b.image=? WHERE b.id =?;`
+      ,[
+          params.layout_id,
+          params.title,
+          params.description,
+          params.image,
+          id,
+          ]);
+      
+        baseResponse.data = res;
+        baseResponse.success = true;
+        baseResponse.message = 'updated';
+        baseResponse.responseCode = 200;
+
+    }catch(error){
+      console.log('error',error);
+      baseResponse.data = undefined;
+      baseResponse.success = false;
+      baseResponse.message = `service updateBlogs.updateBlogs error : ${error}`;
+      baseResponse.responseCode = 400;
+      
+  
+    }finally{
+      if(mysql){
+          await mysql.release();
+  
+      }
+    }
+    return baseResponse;
+}
+result.deleteContent = async function(id){
+  let table = '`services_content` b';
+  let mysql = null;
+  try{
+      mysql = await  mysqlConnector.connection();
+      const res = await mysql.rawquery(`DELETE FROM `+table+`  WHERE b.id = ? ;`,[id]);
+      baseResponse.message = 'Delete Success';
+      baseResponse.data = res;
+      baseResponse.success = true;
+      baseResponse.responseCode = 200;
+  }catch(error){
+      baseResponse.message = `service Blogs.deleteBlogsfromDB error : ${error}`;
+      baseResponse.data = undefined;
+      baseResponse.success = false;
+      baseResponse.responseCode = 400;
+  }finally{
+      if(mysql){
+          await mysql.release();
+  
+      }
+    }
+  return baseResponse;
+} 
+result.getAllContentFromDB = async function(id){
+  let base = {};
+  let mysql = null;
+  let host = process.env.URLPATH;
+  if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
+    host = 'http://localhost:3005/';
+  }
+
+  try {
+   
+      mysql = await mysqlConnector.connection();
+      let select = 'false as `show`,services_content.*, CONCAT("'+host+'",blog_content.image) fullpath'
+      let from = '`services_content`';
+      
+      let where = ' WHERE services_id='+id;
+     
+    
+     
+      
+
+      let data = await mysql.rawquery(`SELECT `+select+` FROM `+from+where+`;`,[]);
+     
+      if (Array.isArray(data) && data.length > 0) {
+        
+        base.data = data;
+        base.success = true;
+        base.responseCode = 200;
+      }else{
+          
+        base.data = [];
+        base.success = false;
+        base.responseCode = 200;
+          
+
+      }
+  }catch(error){
+  
+    base.message = `service Blogs.getAllContentFromDB error : ${error}`;
+    base.success = false;
+    base.responseCode = 400;
+    base.data = [];
+  }finally{
+      if(mysql){
+          await mysql.release();
+
+      }
+  }
+  return base;
+}
+
 export default result;
