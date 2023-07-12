@@ -217,7 +217,7 @@ result.addservices = async (req,res) =>{
                     }
                    
                     
-                    const resData = await blogModel.addContent(content);
+                    const resData = await servicesModel.addContent(content);
                     d.push(i);
                     
                 }
