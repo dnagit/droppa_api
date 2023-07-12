@@ -67,7 +67,7 @@ result.updateservices = async (req, res)=>{
     const rsCheck = await servicesModel.checkServicesUniqueFromDB(params,id);
     if(rsCheck.success == true){
 
-        if(cover_image){
+        if(cover_image.servicesFile){
             params.icon  = await servicesModel.uploadImages(cover_image.servicesFile,params,req.ref);
            
         }
