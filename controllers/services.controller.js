@@ -13,6 +13,7 @@ result.getAll = async (req, res)=>{
         const rsDetail = await servicesModel.getAllFromDB(params);
         const rsAdd = await Promise.all(
             rsDetail.data.map(async (item) => {
+               
                 let content = await servicesModel.getAllContentFromDB(item.id);
                 if(content.success){
                     item.content = content.data;
@@ -26,6 +27,7 @@ result.getAll = async (req, res)=>{
               
             })
         );
+      
        
         baseResponse.message = 'Query Done';
         baseResponse.success = true;
@@ -150,6 +152,14 @@ result.getservicesDetail = async (req,res) =>{
     let mysql = null;
     try{
         const rsDetail = await servicesModel.getServicesDetailFromDB(id);
+        if(rsDetail.data){
+            
+            let content = await servicesModel.getAllContentFromDB(rsDetail.data.id);
+            rsDetail.data.contents = [];
+            if(content.success === true){
+                rsDetail.data.contents = content.data;
+            }
+        }
         baseResponse.data = rsDetail.data;
         baseResponse.success = rsDetail.success;
         baseResponse.message = rsDetail.message;
@@ -180,12 +190,40 @@ result.addservices = async (req,res) =>{
 
     const rsDetail = await servicesModel.checkServicesFromDB(params);
     if(rsDetail.success == true){
-        if(cover_image){
+        if(cover_image.servicesFile){
             params.icon  = await servicesModel.uploadImages(cover_image.servicesFile,params,req.ref);
            
         }
         try{
             const rsAdd = await servicesModel.addServicesFromDB(params);
+            if(rsAdd.success){
+                let d = [];
+                for(var i = 0; i <params.count_conent;i++){
+                    let content = {};
+                    
+                    content.id = params['content_id_'+i];
+                    content.blog_id = blog_id;
+                    content.layout_id = params['content_layout_id_'+i];
+                    content.title = params['content_title_'+i];
+                    content.description = params['content_description_'+i];
+                    content.image = params['content_image_'+i];
+                   
+                    if(cover_image){
+                        if(cover_image['content_contentFile_'+i]){
+                            
+                        content.image  = await servicesModel.uploadImages(cover_image['content_contentFile_'+i],params,req.ref);
+                                // if(cover_image.blogFile){
+                        }
+                    }
+                   
+                    
+                    const resData = await blogModel.addContent(content);
+                    d.push(i);
+                    
+                }
+             
+                const rsContent = await Promise.all(d);
+            }
             baseResponse.data = rsAdd.data;
             baseResponse.success = rsAdd.success;
             baseResponse.message = rsAdd.message;

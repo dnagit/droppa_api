@@ -437,7 +437,7 @@ result.getAllContentFromDB = async function(id){
   try {
    
       mysql = await mysqlConnector.connection();
-      let select = 'false as `show`,services_content.*, CONCAT("'+host+'",blog_content.image) fullpath'
+      let select = 'false as `show`,services_content.*, CONCAT("'+host+'",services_content.image) fullpath'
       let from = '`services_content`';
       
       let where = ' WHERE services_id='+id;
@@ -447,7 +447,7 @@ result.getAllContentFromDB = async function(id){
       
 
       let data = await mysql.rawquery(`SELECT `+select+` FROM `+from+where+`;`,[]);
-     
+      
       if (Array.isArray(data) && data.length > 0) {
         
         base.data = data;
@@ -462,7 +462,7 @@ result.getAllContentFromDB = async function(id){
 
       }
   }catch(error){
-  
+    
     base.message = `service Blogs.getAllContentFromDB error : ${error}`;
     base.success = false;
     base.responseCode = 400;
