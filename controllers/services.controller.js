@@ -114,7 +114,7 @@ result.updateservices = async (req, res)=>{
             }
 
         }
-        const rsContent = await Promise.all(d,cat);
+        const rsContent = await Promise.all(d);
        
         baseResponse.message = rsDetail.message;
         baseResponse.success = rsDetail.success;
