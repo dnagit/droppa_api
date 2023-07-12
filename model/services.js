@@ -111,15 +111,15 @@ result.updateServices = async function(id,params){
     return base;
 }
 
-result.getServicesDetailFromDB = async function(id){
+result.getServicesDetailFromDB = async function(slug){
     let mysql = null;
     const from = '`services_category`';
     try{
       mysql = await  mysqlConnector.connection();
-      const data = await mysql.rawquery(`SELECT * FROM `+from+` WHERE id = ?`,[id]);
+      const data = await mysql.rawquery(`SELECT * FROM `+from+` WHERE slug = ?`,[slug]);
       if (Array.isArray(data) && data.length > 0) {
       
-        baseResponse.data = data;
+        baseResponse.data = data[0];
         baseResponse.success = true;
         baseResponse.message = 'Data Found';
         baseResponse.responseCode = 200;
@@ -433,7 +433,7 @@ result.getAllContentFromDB = async function(id){
   if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
     host = 'http://localhost:3005/';
   }
-
+  
   try {
    
       mysql = await mysqlConnector.connection();

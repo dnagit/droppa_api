@@ -134,7 +134,7 @@ router.delete("/pages/v1/delete/:id", await pagesController.deletepages);
 //services_category
 router.post("/services/v1/getall", await servicesController.getAll);
 router.put("/services/v1/update/:id", await servicesController.updateservices);
-router.get("/services/v1/detail/:id", await servicesController.getservicesDetail);
+router.get("/services/v1/detail/:slug", await servicesController.getservicesDetail);
 router.post("/services/v1/add", await servicesController.addservices);
 router.delete("/services/v1/delete/:id", await servicesController.deleteservices);
 

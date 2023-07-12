@@ -148,18 +148,21 @@ result.updateservices = async (req, res)=>{
 }
 
 result.getservicesDetail = async (req,res) =>{
-    const id = req.params.id;
+    const slug = req.params.slug;
     let mysql = null;
+   
     try{
-        const rsDetail = await servicesModel.getServicesDetailFromDB(id);
+        const rsDetail = await servicesModel.getServicesDetailFromDB(slug);
+        
         if(rsDetail.data){
-            
+           
             let content = await servicesModel.getAllContentFromDB(rsDetail.data.id);
             rsDetail.data.contents = [];
             if(content.success === true){
                 rsDetail.data.contents = content.data;
             }
         }
+   
         baseResponse.data = rsDetail.data;
         baseResponse.success = rsDetail.success;
         baseResponse.message = rsDetail.message;
