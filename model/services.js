@@ -114,9 +114,14 @@ result.updateServices = async function(id,params){
 result.getServicesDetailFromDB = async function(slug){
     let mysql = null;
     const from = '`services_category`';
+    let host = process.env.URLPATH;
+    if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
+      host = 'http://localhost:3005/';
+    }
     try{
       mysql = await  mysqlConnector.connection();
-      const data = await mysql.rawquery(`SELECT * FROM `+from+` WHERE slug = ?`,[slug]);
+      let select = '*, CONCAT("'+host+'",icon) fullpath'
+      const data = await mysql.rawquery(`SELECT  ${select} FROM `+from+` WHERE slug = ?`,[slug]);
       if (Array.isArray(data) && data.length > 0) {
       
         baseResponse.data = data[0];
