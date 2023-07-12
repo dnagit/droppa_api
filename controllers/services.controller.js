@@ -9,24 +9,8 @@ result.getAll = async (req, res)=>{
    
     try{
        
-     
         const rsDetail = await servicesModel.getAllFromDB(params);
-        const rsAdd = await Promise.all(
-            rsDetail.data.map(async (item) => {
-                let content = await servicesModel.getAllContentFromDB(item.id);
-                if(content.success){
-                    item.content = content.data;
-                }else{
-                    item.content = [];
-                }
-               
-               
-                return item;
-               // image.ordering_count = index;
-                //await bannerModel.updateBanneImageOrderingFromDB(image,image.id);
-              
-            })
-        );
+        
        
         baseResponse.message = rsDetail.message;
         baseResponse.success = rsDetail.success;
