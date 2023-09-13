@@ -211,6 +211,7 @@ result.addPagesFromDB = async function(params){
         baseResponse.responseCode = 200;
 
     }catch(error){
+      console.log('error-page',error);
       baseResponse.data = undefined;
       baseResponse.success = false;
       baseResponse.message = `service pages.addPagesFromDB error : ${error}`;
