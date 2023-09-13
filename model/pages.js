@@ -15,6 +15,7 @@ result.getAllFromDB = async function(params){
         const from = '`pages`';
         let limit = '';
         let order_by = '';
+        let where = '';
         let select = '*, CONCAT("'+host+'",banner_image) fullpath';
         if(params.offset != undefined  && params.limit != undefined){
 
@@ -23,9 +24,12 @@ result.getAllFromDB = async function(params){
         if(params.order_by){
           order_by = 'ORDER BY '+params.order_by
         }
+        if(params.slug){
+          where += where?' and (slug LIKE "'+params.slug+'%")':' WHERE (slug LIKE "'+params.slug+'%")';
+      }
         
-    let data = await mysql.rawquery(`SELECT ${select} FROM `+from+` `+order_by+` `+limit+`;`,[]);
-    let total = await mysql.rawquery(`SELECT COUNT(*) total FROM `+from+`;`,[]);
+    let data = await mysql.rawquery(`SELECT ${select} FROM `+from+` `+where+` `+order_by+` `+limit+`;`,[]);
+    let total = await mysql.rawquery(`SELECT COUNT(*) total FROM `+from+` `+where+`;`,[]);
     
       
         if (Array.isArray(data) && data.length > 0) {
@@ -40,7 +44,7 @@ result.getAllFromDB = async function(params){
 
         }
     }catch(error){
-        
+        console.log('error',error);
         error.message = `service pages.getAllFromDB error : ${error}`;
         error.success = false;
         error.responseCode = 400;
@@ -211,7 +215,6 @@ result.addPagesFromDB = async function(params){
         baseResponse.responseCode = 200;
 
     }catch(error){
-      console.log('error-page',error);
       baseResponse.data = undefined;
       baseResponse.success = false;
       baseResponse.message = `service pages.addPagesFromDB error : ${error}`;
@@ -341,7 +344,7 @@ result.updateContent = async function(params,id){
   console.log('params-update',params);
   try{
       mysql = await  mysqlConnector.connection();
-      const res = await mysql.rawquery(`UPDATE `+table+` SET p.group_id=?, p.component_id=?, p.component=?, p.data=? WHERE p.id =?;`
+      const res = await mysql.rawquery(`UPDATE `+table+` SET p.group_id=?, p.component_id=?, p.component=?,p.data=? WHERE p.id =?;`
       ,[
           params.group_id,
           params.component_id,
