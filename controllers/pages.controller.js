@@ -268,6 +268,7 @@ result.addpages = async (req,res) =>{
             baseResponse.message = rsAdd.message;
             baseResponse.responseCode = rsAdd.responseCode;
         }catch(error){
+            console.log('error',error);
             baseResponse.message = error.message;
             baseResponse.success = error.success;
             baseResponse.responseCode = error.responseCode;
