@@ -1,5 +1,6 @@
 import baseResponse from "../helpers/base-response.helper";
 import pagesModel from "../model/pages";
+import bannerModel from "../model/banner"
 import mysqlConnector from "../db/mysql-connector";
 const result = {};
 result.getAll = async (req, res)=>{
@@ -7,7 +8,6 @@ result.getAll = async (req, res)=>{
     let params = req.body;
     try{
    
-     
         const rsDetail = await pagesModel.getAllFromDB(params);
         const rsAdd = await Promise.all(
             rsDetail.data.map(async (item) => {
@@ -16,9 +16,27 @@ result.getAll = async (req, res)=>{
                 let content = await pagesModel.getAllContentFromDB(item.id);
                // console.log('content',content);
                 if(content.success){
-                    item.contents = content.data;
+                    //fetch banner
+                    let rss = await Promise.all(content.data.map(async (element) => {
+                        let ele = await Promise.all(element.data.map(async (child) => {
+                            if(child.type == 'banner'){
+                                let params = {
+                                    id: child.value
+                                }
+                                let banner = await bannerModel.getimageAllFromDB(params);
+                                if(banner.success){
+                                    child.files = banner.data;
+                                }
+                                return child;
+                            }
+                        }));
+                        return content.data;
+                    }));
+        
+
+                    item.contents = rss;
+                    //fetch banner
                 }
-               
                
                 return item;
                // image.ordering_count = index;
@@ -64,20 +82,17 @@ result.updatepages = async (req, res)=>{
         
         // cover_image = JSON.parse(JSON.stringify(req.files)).blogFile;
     }
+   
+    if(cover_image){
+        
+        params.banner_image  = await pagesModel.uploadImages(cover_image.pagesFile,params,req.ref);
+       
+    }
     if(params.contents){
         params.contents = JSON.parse(params.contents);
     }
     if(params.contents_remove){
         params.contents_remove = JSON.parse(params.contents_remove);
-    }
-   
-    
-   // params.contents_remove = JSON.parse(params.contents_remove);
-    
-    if(cover_image){
-        
-        params.banner_image  = await pagesModel.uploadImages(cover_image.pagesFile,params,req.ref);
-       
     }
    
     try{
@@ -165,13 +180,25 @@ result.getpagesDetail = async (req,res) =>{
         rsDetail.data.contents = [];
         let content = await pagesModel.getAllContentFromDB(rsDetail.data.id);
         if(content.success){
-            rsDetail.data.contents = content.data;
-        }
-        content.data.map(v=>{
-            console.log('v',v.data);
-        })
-       
+            //fetch banner
+            let rsAdd = await Promise.all(content.data.map(async (element) => {
+                let ele = await Promise.all(element.data.map(async (child) => {
+                    if(child.type == 'banner'){
+                        let params = {
+                            id: child.value
+                        }
+                        let banner = await bannerModel.getimageAllFromDB(params);
+                        if(banner.success){
+                            child.files = banner.data;
+                        }
+                        return child;
+                    }
+                }));
+                return content.data;
+            }));
         
+            rsDetail.data.contents = rsAdd[0];
+        }
         baseResponse.data = rsDetail.data;
         baseResponse.success = rsDetail.success;
         baseResponse.message = rsDetail.message;
