@@ -16,26 +16,7 @@ result.getAll = async (req, res)=>{
                 let content = await pagesModel.getAllContentFromDB(item.id);
                // console.log('content',content);
                 if(content.success){
-                    //fetch banner
-                    let rss = await Promise.all(content.data.map(async (element) => {
-                        let ele = await Promise.all(element.data.map(async (child) => {
-                            if(child.type == 'banner'){
-                                let params = {
-                                    id: child.value
-                                }
-                                let banner = await bannerModel.getimageAllFromDB(params);
-                                if(banner.success){
-                                    child.files = banner.data;
-                                }
-                                return child;
-                            }
-                        }));
-                        return content.data;
-                    }));
-        
-
-                    item.contents = rss;
-                    //fetch banner
+                    item.contents = content.data;
                 }
                
                 return item;
@@ -183,7 +164,7 @@ result.getpagesDetail = async (req,res) =>{
             //fetch banner
             let rsAdd = await Promise.all(content.data.map(async (element) => {
                 let ele = await Promise.all(element.data.map(async (child) => {
-                    if(child.type == 'banner'){
+                    if(child.type == 'banner' && child.value){
                         let params = {
                             id: child.value
                         }
@@ -204,6 +185,7 @@ result.getpagesDetail = async (req,res) =>{
         baseResponse.message = rsDetail.message;
         baseResponse.responseCode = rsDetail.responseCode;
     }catch(error){
+        console.log('error',error);
         baseResponse.message = error.message;
         baseResponse.success = error.success;
         baseResponse.responseCode = error.responseCode;
@@ -268,7 +250,6 @@ result.addpages = async (req,res) =>{
             baseResponse.message = rsAdd.message;
             baseResponse.responseCode = rsAdd.responseCode;
         }catch(error){
-            console.log('error',error);
             baseResponse.message = error.message;
             baseResponse.success = error.success;
             baseResponse.responseCode = error.responseCode;
