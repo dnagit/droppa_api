@@ -244,11 +244,11 @@ result.deleteDatafromDB = async function(id){
         let data = await mysql.rawquery(`SELECT `+select+` FROM `+table+` WHERE id=?;`,[id]);
         console.log('file-data',data);
         if (Array.isArray(data) && data.length > 0) {
-            fs.unlink(data[0].path, function (err) {
+            /*fs.unlink(data[0].path, function (err) {
                 if (err) throw err;
                 // if no error, file has been deleted successfully
                 console.log('File deleted!');
-            });
+            });*/
             
         }
         //fs.unlinkSync(filePath)
