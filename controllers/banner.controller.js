@@ -273,10 +273,10 @@ result.updateBanneImageOrdering = async function(req,res){
         );
         
         //const rsAdd = await portfolioModel.updatePortfoliosImageFromDB(params,id);
-        baseResponse.message = rsAdd.message;
-        baseResponse.data = rsAdd.data;
-        baseResponse.success = rsAdd.success;
-        baseResponse.responseCode = rsAdd.responseCode;
+        baseResponse.message = 'Done';
+        baseResponse.data = rsAdd;
+        baseResponse.success = true;
+        baseResponse.responseCode = 200;
 
   
     } catch (error) {
