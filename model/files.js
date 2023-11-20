@@ -155,10 +155,10 @@ result.uploadImages = async function(cover_image,params,ref){
           let savepath =  params.savepath;
           let path = params.path;
          
-          if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
+          /*if(process.env.DEVELOPMENT === 'DEVELOPMENT'){
               path = 'public/img/'+ref+'/storage/';
               savepath = 'public/img/'+ref+'/storage/';
-          }
+          }*/
          
           if (!fs.existsSync(path)) {
             fs.mkdirSync(path);
